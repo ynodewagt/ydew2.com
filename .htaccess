@@ -1,0 +1,32 @@
+Options -Indexes
+
+<FilesMatch "log.(txt)$">
+ Order Allow,Deny
+ Deny from all
+</FilesMatch>
+
+
+RewriteEngine off
+RewriteCond %{HTTP_HOST} ^www\.(.*) [NC]
+RewriteRule ^/?(.*) http://%1/$1 [L,R=permanent]
+RewriteCond %{SERVER_PORT} !^443$
+RewriteRule .* http://%{SERVER_NAME}%{REQUEST_URI} [R,L]
+
+ErrorDocument 403 /
+ErrorDocument 404 /
+ErrorDocument 500 /
+
+#перенаправляем на URI со слешем на коннце если его нет
+RewriteBase /
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_URI} !(.*)/$
+RewriteRule ^(.*[^/])$ $1/ [L,R=301]
+
+# не позволять httpd отдавать файлы, начинающиеся с точки (.htaccess, .svn, .git и прочие)
+RedirectMatch 403 /\..*$
+RewriteCond %{REQUEST_URI} !assets(.*)
+RewriteCond %{SCRIPT_FILENAME} !-d
+RewriteCond %{SCRIPT_FILENAME} !-f
+RewriteRule . index.php [L]
+php_value default_charset utf-8
+AddType 'text/html; charset=utf-8' .html .htm .shtml
