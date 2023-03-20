@@ -1,0 +1,11 @@
+# folder logs
+.idea/*
+cache/*
+!cache/.htaccess
+translate/*
+!translate/.htaccess
+!translate/*_default.php
+modules/stat.php
+vendor/*
+test.php
+/exch_rates.php
